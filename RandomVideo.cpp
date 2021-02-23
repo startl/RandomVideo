@@ -362,10 +362,10 @@ void RandomVideo::resizeEvent(QResizeEvent* size)
 		mResizeCount++;
 	}
 
-	if (mResizeCount==2)
-	{
-		on_btnChange_clicked();
-	}
+	// if (mResizeCount==2)
+	// {
+	// 	on_btnChange_clicked();
+	// }
 	// for (int i=0; i < ui.listWidget->count(); i++)
  //    {
 	// 	QListWidgetItem* pItem = ui.listWidget->item(i);
