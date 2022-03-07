@@ -50,6 +50,9 @@
     <ClCompile Include="FrmSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StringHelper.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="RandomVideo.ui">
@@ -90,6 +93,9 @@
     </ClInclude>
     <ClInclude Include="TimeHelper.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StringHelper.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

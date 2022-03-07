@@ -11,8 +11,8 @@ int CMessageBox::ShowMessageBox(Icon icon, const QString& title, const QString& 
 	box.setButtonText(Ok, "确定");
 	box.setButtonText(Cancel, "取消");
 	box.setButtonText(Yes, "是");
-	box.setButtonText(No, "否");
-	box.setWindowFlags(Qt::WindowStaysOnTopHint);
+	box.setButtonText(No, "否"); //Qt::FramelessWindowHint |
+	box.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
 	box.raise();
 	box.activateWindow();
 	return box.exec();

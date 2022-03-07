@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <qlogging.h>
+#include <QString>
 #include <iostream>
 #include <fstream>
 
@@ -9,7 +10,11 @@ using namespace std;
 
 #define  LOG
 
-#ifdef _DEBUG
+#ifdef _DEBUG 
+#define  LOG_CON
+#endif // DEBUG
+
+#ifdef TEST 
 #define  LOG_CON
 #endif // DEBUG
 
@@ -18,6 +23,7 @@ class CLog
 	static void openLogFile();
 	static void writeLogMessage(QtMsgType type, const QMessageLogContext& context, const QString& msg);
 public:
-	static void installLog();
+	static QString logPath;
+	static void installLog(const QString& logName = "log", bool removeOld = true);
 	static void flush();
 };

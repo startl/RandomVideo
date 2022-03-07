@@ -63,8 +63,11 @@
           <height>30</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>也可以按空格键</string>
+        </property>
         <property name="text">
-         <string>换一换(R)</string>
+         <string>换一换</string>
         </property>
         <property name="shortcut">
          <string>Alt+R</string>

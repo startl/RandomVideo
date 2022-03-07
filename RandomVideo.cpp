@@ -23,6 +23,8 @@ RandomVideo::RandomVideo(QWidget *parent)
 
 	setWindowState(Qt::WindowMaximized);
 
+	ui.btnChange->setShortcut(tr("Space"));
+
 	connect(ui.listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(onListWidgetItemDoubleClicked(QListWidgetItem*)));
 	ui.listWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
 	connect(ui.listWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this,

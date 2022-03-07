@@ -1,7 +1,11 @@
 ﻿#include "log.h"
 #include <stdlib.h>
-#include <QTime>
-#include <QFileInfo>
+#include <mutex>
+#include <QDateTime>
+#include <QFile>
+#include <QApplication>
+#include <QStandardPaths>
+#include "FileHelper.h"
 
 #if defined(LOG_CON)
 #if defined(Q_OS_WIN)
@@ -10,10 +14,13 @@ HANDLE m_outHandle;
 #endif
 #endif
 
-#include "Global.h"
-#include <QMutex>
+#pragma execution_character_set("utf-8")
 
 const uint LOG_WRITE_FREQUENCY = 1;
+
+static std::mutex gLogMutex;
+
+
 
 //支持中文路徑，並支持寫入unioce字符
 class WOFSTREAM : public std::ofstream
@@ -69,28 +76,22 @@ WOFSTREAM& endl(WOFSTREAM& wf) //重载换行符
 };
 
 static WOFSTREAM cFile;
+QString CLog::logPath = "";
 
 void CLog::openLogFile()
 {
 	/*file.setFileName(gUnify->App()->Path()->appDir + "log.txt");
 	file.open(QIODevice::WriteOnly | QIODevice::Append);*/
-	string s = (gPath.appDir + "log.txt").toStdString().c_str();
-	cFile.open(s.c_str(), ios::app);
+	//不要包含unify，update程序会引入多余文件
+	cFile.open(CLog::logPath.toLocal8Bit().toStdString().c_str(), ios::app);
 	//cFile.imbue(std::locale("chs"));
 	cFile.imbue(locale(locale(), "", LC_CTYPE));
 }
 
 void CLog::writeLogMessage(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
-	static QMutex mutex;
 	//static uint lineCounter = 0;
-	mutex.lock();
-
-	//QTextStream text_stream;
-	/*if (!file.isOpen()) {
-		openLogFile();
-		text_stream.setDevice(&file);
-	}*/
+	//std::lock_guard<std::mutex> autoLock(gLogMutex);
 	if (!cFile.is_open())
 	{
 		openLogFile();
@@ -147,14 +148,39 @@ void CLog::writeLogMessage(QtMsgType type, const QMessageLogContext& context, co
 	//	//file.close();
 	//	//openLogFile();
 	//}
-
-	mutex.unlock();
 }
 
-void CLog::installLog()
+void CLog::installLog(const QString& logName, bool removeOld)
 {
+#ifndef Q_OS_WIN
+	//在程序初始化之后，路径会增加程序名称，比如.local/share/,会变成.local/share/uim
+	QString writableLocation = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	QString sysData = writableLocation + "/data/"; //data目录
+	QString logBakDir = sysData + "logs/";
+#else
+	QString appDir = QApplication::applicationDirPath();
+	appDir = appDir.replace('/', '\\');
+	QString sysData = appDir + "\\data\\"; //data目录
+	QString logBakDir = sysData + "logs\\";
+#endif
+	CLog::logPath = sysData + logName + ".txt";
+
 #if defined(LOG)
-	QFile::remove(gPath.appDir + "log.txt");
+	if (removeOld)
+		CFileHelper::deleteFile(CLog::logPath);
+	else
+	{
+		qint64 size = CFileHelper::getFileSize(CLog::logPath);
+		if (size > 10 * 1024 * 1024)//10M
+		{
+			//QFile::remove(CLog::logPath+".old");
+			CFileHelper::ensureDirExist(logBakDir);
+			QDateTime dt = QDateTime::currentDateTime();
+			QString logBakPath = logBakDir + dt.toString("yyyy-MM-dd hh.mm.ss") + ".txt";
+			CFileHelper::copyFile(CLog::logPath, logBakPath, true);
+			CFileHelper::deleteFile(CLog::logPath);
+		}
+	}
 	qInstallMessageHandler(writeLogMessage);
 #endif
 
@@ -165,7 +191,7 @@ void CLog::installLog()
 	/*while (m_outHandle == 0) {
 	m_outHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	}*/
-	SetConsoleTitle(L"log");
+	SetConsoleTitle(logName.toStdWString().c_str());
 	//SetConsoleCP(936);
 
 	freopen("CONOUT$", "w+t", stdout); // 申请写

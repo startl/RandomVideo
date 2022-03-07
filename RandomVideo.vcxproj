@@ -64,19 +64,19 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>5.14.2</QtInstall>
+    <QtInstall>5.14.2_ms2017_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="QtSettings">
-    <QtInstall>5.14.2</QtInstall>
+    <QtInstall>5.14.2_ms2017_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>5.14.2</QtInstall>
+    <QtInstall>5.14.2_ms2017_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="QtSettings">
-    <QtInstall>5.14.2</QtInstall>
+    <QtInstall>5.14.2_ms2017_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -161,6 +161,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageBox.cpp" />
     <ClCompile Include="RandomVideo.cpp" />
+    <ClCompile Include="StringHelper.cpp" />
     <ClCompile Include="TimeHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +181,7 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="MessageBox.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="StringHelper.h" />
     <ClInclude Include="TimeHelper.h" />
   </ItemGroup>
   <ItemGroup>
